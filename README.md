@@ -1,11 +1,7 @@
-<p align="center">
-  <img src="451007976_875441561268187_5221728724729172351_n.jpg" alt="Object Tracker Example" width="600" />
-</p>
-
 # YOLOv8 Object Tracker
 
 <p align="center">
-  <img src="Screenshot 2024-08-23 085938.png" alt="Object Tracker Example" width="600" />
+  <img src="output/op1.png" alt="Object Tracker Example" width="600" />
 </p>
 
  This project is for MATE NOAA competation by CrocoMarine Rov.
@@ -104,14 +100,14 @@ the main difference is the ids of the tracked objects.
 here is an output example:
 ### Detection Output
 <p align="center">
-  <img src="Screenshot 2024-08-23 085938.png" alt="Object Tracker Example" width="600" />
+  <img src="output/op1.png" alt="Object Tracker Example" width="600" />
 </p>
 
 ### Tracker Output
 <p align="center">
-  <img src="Screenshot 2024-08-23 091853.png" alt="Object Tracker Example" width="600" />
+  <img src="output/op2.png" alt="Object Tracker Example" width="600" />
 </p>
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the license/royalty free copy for use and evaluation by NOAA.

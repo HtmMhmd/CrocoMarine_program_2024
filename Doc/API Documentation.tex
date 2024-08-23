@@ -1,0 +1,264 @@
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{geometry}
+
+
+\title{API Documentation}
+\author{CrocoMarine ROV}
+
+\begin{document}
+
+
+\maketitle
+
+\tableofcontents
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+
+\section{Introduction}
+This API is the program of the MATE NOAA Competition by the CrocoMarine ROV team. It is designed to track objects in video frames and is open-sourced. and NOAA given permission to use it on additional videos.
+\section{ObjectTracker API}
+============================================
+
+List all the API endpoints along with their descriptions, request methods, and parameters.
+\subsection{Overview}
+-----------------------
+
+\begin{itemize}
+    \item The \textbf{ObjectTracker} class is a Python module designed to track objects in video frames.
+    \item It provides two main modes of operation: object detection and tracking.
+    \item The class uses YOLOV8 (You Only Look Once) for object detection and tracking.
+\end{itemize}
+
+\subsection{Main Functionality}
+-----------------------
+
+\begin{itemize}
+    \item \textbf{Object Detection Mode (mode=1)}: In this mode, the class uses YOLO to detect objects in each frame and returns the bounding boxes for each.
+    \item \textbf{Object Tracking Mode  (mode=0)}: In this mode, the class uses the tracking data from the previous frame to track objects in the current frame.
+    \item The tracked objects are then updated with new bounding boxes and track IDs.
+    \item The class also provides options to save the tracking data to an Excel file using \textit{\textbf{ExcelHandler}}and video output using the \textit{\textbf{VideoSaver}} class.
+\end{itemize}
+
+\subsection{Class Methods}
+-----------------------
+
+\begin{itemize}
+    \item\textbf{\_init\_ :} 
+    
+    \textbf{Description :} Initializes the \textbf{ObjectTracker} object.
+
+    \textbf{Parameters :}    
+    \begin{itemize}
+        \item \textit{model\_path (str):} The path to the YOLOv8 model file.
+        \item \textit{confidence\_threshold (float):} The confidence threshold for detection (default: 0.25).
+        \item \textit{classes (list):} The list of classes to detect (default: [0]).
+        \item \textit{save\_output (bool):} A flag to save output (default: False).
+        \item \textit{save\_data (bool):} A flag to save data (default: False).
+        \item \textit{origional\_size (bool):} A flag to use original size (default: False).
+        \item \textit{mode (int):} The mode of operation (default: 0).
+        \item \textit{show\_output (bool):} A flag to show output (default: False).
+    \end{itemize}
+    
+    \item\textbf{run :}
+    
+    \textbf{Description :} Runs the object tracking process on the specified input video or image.
+
+    \textbf{Parameters :}
+    \begin{itemize}
+        \item \textit{input\_path (str):} The path to the input video or image.
+    \end{itemize}
+
+    \textbf{Returns :} None
+    
+\end{itemize}
+
+\subsection{Example Usage}
+-----------------------
+
+\begin{lstlisting}[language=Python]
+    from CrocoMarine_program_2024 import ObjectTracker
+
+    # Create an ObjectTracker object
+    detector = ObjectTracker(
+        model_path="CrocoMarine_model_2023.pt",
+        confidence_threshold=0.4,
+        classes=[0],
+        save_output=True,
+        save_data=True,
+        origional_size=False,
+        mode=1, # detection mode
+        show_output=False
+    )
+    
+    # Run the object tracking process
+    detector.run("seafloor_footage.mp4")
+\end{lstlisting}
+
+\subsection{Command-Line Interface}
+-----------------------
+
+\subsubsection{Overview :}
+
+    The `ObjectTracker` class can also be used through a command-line interface using the following command:
+
+    This will run the API with the specified model file, input video, confidence threshold, classes to detect, and flags to save output and data.
+
+\subsubsection{Example :}
+\begin{lstlisting}[language=bash, breaklines=true]
+    python main.py --model_path "CrocoMarine_model_2023.pt" -ip "seafloor_footage.mp4" --mode 1  --conf 0.4 -show_output --save_output --save_data --origional_size
+\end{lstlisting}
+
+\subsubsection{Arguments  :}
+
+The API uses the `argparse` library to parse command line arguments. The arguments are defined in the `main.py` file, and they are used to configure the `ObjectTracker` class.
+
+\begin{itemize}
+    \item {\textbf{--model\_path (required):}} The path to the model file.
+    \item {\textbf{--conf (optional, default=0.25):}} The confidence threshold for detection.
+    \item {\textbf{--classes (optional, default=[0]):}} The list of classes to detect.
+    \item {\textbf{--save\_output (optional, default=False):}} Flag to save output.
+    \item {\textbf{--save\_data (optional, default=False):}} Flag to save data.
+    \item {\textbf{--origional\_size (optional, default=False):}} Flag to use original size.
+    \item {\textbf{--show\_output (optional, default=False):}} Flag to show the model prediction output.
+    \item {\textbf{--mode (optional, default=0):}} The mode of operation (choices: 0, 1).
+    \item {\textbf{--input\_path (required):}} The path to the input video or image.
+\end{itemize}
+
+\subsection{Output Formats}
+-----------------------
+
+    The `ObjectTracker` class generates output in the following formats:
+    \begin{itemize}
+        \item \textbf{Video(.MP4)} : A video file showing the tracked objects.
+        \item \textbf{Data(.xlsx)} : A excel file containing information about the tracked objects.
+    \end{itemize}
+
+
+\section{ExcelHandler API Documentation}
+============================================
+
+\subsection{Overview :}
+-----------------------
+
+    The `ExcelHandler` class is designed to handle Excel file operations, specifically adding data to an internal data list and saving it to an Excel file. This class provides a simple and efficient way to manage Excel data.
+
+\subsection{Main Functionality :}
+-----------------------
+
+    The `ExcelHandler` class is designed to handle the following main functionality:
+
+\begin{itemize}
+    \item \textbf{Data Addition}
+        \begin{itemize}
+            \item Description: The `add\_data` method allows you to add rows of data to the internal data list. This data can be in the form of lists, where each list represents a row in the Excel file.
+        \end{itemize}
+    \item \textbf{Data Saving}
+        \begin{itemize}
+            \item Description: The `save` method saves the internal data to the specified Excel file. The data is saved in a structured format, with each row representing a list of values.
+        \end{itemize}
+\end{itemize}
+\subsection{Class Methods :}
+-----------------------
+
+    The `ExcelHandler` class offers the following methods:
+
+\begin{itemize}
+    \item \textbf{\_init\_}
+        \begin{itemize}
+            \item Description: Initializes the `ExcelHandler` object with a file path.
+            \item Parameters:
+                \begin{itemize}
+                    \item {`file\_path` (str):} The path to the Excel file.
+                \end{itemize}
+            \item Returns: None
+        \end{itemize}
+    \item \textbf{add\_data}
+        \begin{itemize}
+            \item Description: Adds a row of data to the internal data list.
+            \item Parameters:
+                \begin{itemize}
+                    \item `row` (list): A list of values to be added as a row in the Excel file.
+                \end{itemize}
+            \item Returns: None
+        \end{itemize}
+    \item \textbf{save}
+        \begin{itemize}
+            \item Description: Saves the internal data to the Excel file.
+            \item Parameters: None
+            \item Returns: None
+        \end{itemize}
+\end{itemize}
+
+
+\section{VideoSaver API Documentation}
+============================================
+
+\subsection{Overview}
+-----------------------
+
+The `VideoSaver` class is designed to save video frames to a file. It provides a simple and efficient way to record video from various sources, such as cameras or video processing pipelines.
+
+\subsection{Main Functionality}
+-----------------------
+
+\begin{itemize}
+    \item The `VideoSaver` class provides a simple and efficient way to record video from various sources, such as cameras or video processing pipelines.
+\end{itemize}
+
+\subsection{Class Methods}
+-----------------------
+
+\begin{itemize}
+    \item \textbf{\_init\_}
+        \begin{itemize}
+            \item Description: Initializes the `VideoSaver` object with the specified filename, frames per second, and FourCC code.
+            \item Parameters:
+                \begin{itemize}
+                    \item {`filename` (str):} The filename to save the video to.
+                    \item {`fps` (float):} The frames per second to save the video at. Default is 15.0.
+                    \item {`fourcc` (str):} The FourCC code to use for the video codec. Default is 'mp4v'.
+                \end{itemize}
+            \item Returns: None
+        \end{itemize}
+    \end{itemize}
+
+
+\begin{itemize}
+    \item \textbf{start}
+        \begin{itemize}
+            \item Description: Starts the video saver, creating a `VideoWriter` object with the specified width and height.
+            \item Parameters:
+                \begin{itemize}
+                    \item `width` (int): The width of the video frames.
+                    \item `height` (int): The height of the video frames.
+                \end{itemize}
+            \item Returns: None
+        \end{itemize}
+    \item \textbf{write}
+        \begin{itemize}
+            \item Description: Writes a single frame to the video file. If the video saver has not been started, this method does nothing.
+            \item Parameters:
+                \begin{itemize}
+                    \item `frame` (numpy.ndarray): The frame to write.
+                \end{itemize}
+            \item Returns: None
+        \end{itemize}
+    \item \textbf{stop}
+        \begin{itemize}
+            \item Description: Stops the video saver, releasing any system resources associated with the `VideoWriter` object.
+            \item Parameters: None
+            \item Returns: None
+        \end{itemize}
+\end{itemize}
+
+
+
+
+\end{document}
