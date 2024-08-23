@@ -24,7 +24,8 @@ class ObjectTracker:
                 save_output=False, 
                 save_data=False, 
                 origional_size=False,
-                mode = 0):
+                mode = 0,
+                show_output = True ):
         """
         Initializes the ObjectTracker class.
 
@@ -35,6 +36,7 @@ class ObjectTracker:
             save_output (bool): Whether to save the output images or video (default: False).
             save_data (bool): Whether to save tracking data in an Excel file (default: False).
             origional_size (bool): Whether to maintain the original size of the input video/image (default: False).
+            mode (int: 0,1): switches between Object Tracker Mode for mode=0 and Detection Mode for mode=1. 
         """
         # Initialize the YOLOv8 model
         self.model = YOLO(model_path)
@@ -75,10 +77,11 @@ class ObjectTracker:
 
         # Initialize the tracking data
         if self.save_data:
-            self.tracking_data = ExcelHandler('CrocoMarine_spreadsheet_2024.XLS')
+            self.tracking_data = ExcelHandler('CrocoMarine_spreadsheet_2024.xlsx')
         
         self.mode = mode 
 
+        self.show_output = show_output
     def run(self, input_source: str) -> None:
         """
         Detects objects and tracks them in images or videos.
@@ -145,22 +148,22 @@ class ObjectTracker:
                     if self.save_data:
                         # Add the current frame's data to the tracking data
                         self.tracking_data.add_data([frame_num, self.x1, self.y1, self.x2, self.y2])
-                
+            else:
+                raise ValueError("Mode is either 0 for tracking or 1 for detection")
             # Increment the frame number
             frame_num += 1
 
-            # Show the annotated frame
-            cv2.imshow("YOLOv8 Object Tracking", cv2.resize(self.frame, (self.IMAGE_WIDTH, self.IMAGE_HEIGHT)))
+            if self.show_output:
+                # Show the annotated frame
+                cv2.imshow("YOLOv8 Object Tracking", cv2.resize(self.frame, (self.IMAGE_WIDTH, self.IMAGE_HEIGHT)))
+                
+                # Exit the loop if the 'q' key is pressed
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
             
             # Save the annotated frame to a video file if specified
             if self.save_output:
                 self.video_writer.write(cv2.resize(self.frame, (self.IMAGE_WIDTH, self.IMAGE_HEIGHT)))
-            
-
-            # Exit the loop if the 'q' key is pressed
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
 
         # Stop the video writer if specified
         if self.save_output:
@@ -172,9 +175,10 @@ class ObjectTracker:
         
         # Release the video capture object
         self.cap.release()
-        
-        # Close OpenCV windows
-        cv2.destroyAllWindows()
+
+        if self.show_output:
+            # Close OpenCV windows
+            cv2.destroyAllWindows()
     
     def init_capture(self, input_source: str) -> None:
         """
