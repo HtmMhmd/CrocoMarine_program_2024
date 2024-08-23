@@ -1,1 +1,0 @@
-python main.py -ip "seafloor_footage.mp4" --mode 1 -m "CrocoMarine_model_2023.pt" --conf 0.4 -sho -svo -svd

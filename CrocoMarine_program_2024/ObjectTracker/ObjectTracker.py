@@ -140,7 +140,7 @@ class ObjectTracker:
                     continue
 
                 # Loop through each tracked object
-                for box, trcker_id in zip(boxes, track_ids):
+                for box, self.trcker_id in zip(boxes, track_ids):
                     # Apply the tracking data to the current box
                     self.apply_tracking(box)
 
